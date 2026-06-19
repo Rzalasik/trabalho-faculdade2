@@ -1,50 +1,73 @@
 #!/bin/bash
-# Cria os 3 bancos de dados e executa os scripts de criação das tabelas.
-# Uso: ./setup.sh [usuario_postgres] [senha_postgres]
-# Padrão: usuário = postgres, senha = postgres
 
-PGUSER="${1:-postgres}"
-export PGPASSWORD="${2:-postgres}"
+export PATH="/snap/bin:/home/ryan/.local/bin:$PATH"
 
-echo "=== Setup dos bancos de dados ==="
-echo "Usuário: $PGUSER"
-echo ""
+CONTAINER="postgres-trabalho"
+PG_PORT=5432
+PG_USER="postgres"
+PG_PASS="postgres"
 
-run_sql() {
-    local db="$1"
-    local file="$2"
-    psql -U "$PGUSER" -h localhost -d "$db" -f "$file" 2>&1
+echo "=== trabalho faculdade2 devtools ==="
+
+# ── Docker / PostgreSQL ──────────────────────────────────────────────────────
+if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
+  echo "[1/3] Container '$CONTAINER' já está rodando."
+
+elif docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
+  echo "[1/3] Iniciando container '$CONTAINER' existente..."
+  docker start "$CONTAINER"
+
+else
+  echo "[1/3] Criando container '$CONTAINER'..."
+  docker run -d \
+    --name "$CONTAINER" \
+    -e POSTGRES_PASSWORD="$PG_PASS" \
+    -p "$PG_PORT":5432 \
+    postgres:16
+fi
+
+# ── Aguarda o PostgreSQL aceitar conexões ────────────────────────────────────
+echo "    Aguardando PostgreSQL na porta $PG_PORT..."
+for i in $(seq 1 20); do
+  PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres -c '\q' &>/dev/null && break
+  sleep 1
+done
+
+if ! PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres -c '\q' &>/dev/null; then
+  echo "Erro: PostgreSQL não respondeu. Verifique se o Docker está rodando."
+  exit 1
+fi
+echo "    PostgreSQL ativo na porta $PG_PORT"
+
+# ── Cria bancos e tabelas ────────────────────────────────────────────────────
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+create_db_and_tables() {
+  local db="$1"
+  local sql="$2"
+
+  PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres \
+    -c "SELECT 1 FROM pg_database WHERE datname='$db'" | grep -q 1 \
+    || PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres \
+       -c "CREATE DATABASE $db;" &>/dev/null
+
+  PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d "$db" -f "$sql" &>/dev/null
+  echo "    $db ✓"
 }
 
-create_db() {
-    local db="$1"
-    psql -U "$PGUSER" -h localhost -d postgres -c "CREATE DATABASE $db;" 2>&1
-}
+echo "[2/3] Criando bancos e tabelas..."
+create_db_and_tables clinica_veterinaria "$DIR/clinica-veterinaria/banco.sql"
+create_db_and_tables oficina_mecanica    "$DIR/oficina-mecanica/banco.sql"
+create_db_and_tables escola_cursos       "$DIR/escola-cursos-livres/banco.sql"
 
-# ── Clínica Veterinária ──────────────────────────────────────────────────────
-echo ">>> Criando banco: clinica_veterinaria"
-create_db clinica_veterinaria
-echo ">>> Criando tabelas..."
-run_sql clinica_veterinaria "$(dirname "$0")/clinica-veterinaria/banco.sql"
-echo ""
+echo "    Host: localhost | User: $PG_USER | Senha: $PG_PASS"
 
-# ── Oficina Mecânica ─────────────────────────────────────────────────────────
-echo ">>> Criando banco: oficina_mecanica"
-create_db oficina_mecanica
-echo ">>> Criando tabelas..."
-run_sql oficina_mecanica "$(dirname "$0")/oficina-mecanica/banco.sql"
-echo ""
+# ── DBeaver ──────────────────────────────────────────────────────────────────
+echo "[3/3] Abrindo DBeaver..."
+flatpak run io.dbeaver.DBeaverCommunity &>/dev/null &
 
-# ── Escola de Cursos Livres ──────────────────────────────────────────────────
-echo ">>> Criando banco: escola_cursos"
-create_db escola_cursos
-echo ">>> Criando tabelas..."
-run_sql escola_cursos "$(dirname "$0")/escola-cursos-livres/banco.sql"
 echo ""
-
-echo "=== Concluído! ==="
-echo ""
-echo "Bancos criados:"
-echo "  clinica_veterinaria  →  clinica-veterinaria/"
-echo "  oficina_mecanica     →  oficina-mecanica/"
-echo "  escola_cursos        →  escola-cursos-livres/"
+echo "Pronto! Bancos disponíveis:"
+echo "  clinica_veterinaria  →  branch clinica-veterinaria"
+echo "  oficina_mecanica     →  branch oficina-mecanica"
+echo "  escola_cursos        →  branch escola-cursos-livres"

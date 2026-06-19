@@ -48,7 +48,7 @@ escola-cursos-livres/
 ### 1. Crie o banco no PostgreSQL
 
 ```sql
-CREATE DATABASE escola_cursos;
+CREATE DATABASE d_escola_cursos;
 ```
 
 ### 2. Execute os scripts abaixo na ordem (respeita as foreign keys)
@@ -87,7 +87,7 @@ CREATE TABLE matricula (
 Abra `src/main/java/com/escola/util/Conexao.java` e ajuste os dados:
 
 ```java
-private static final String URL      = "jdbc:postgresql://localhost:5432/escola_cursos";
+private static final String URL      = "jdbc:postgresql://localhost:5432/d_escola_cursos";
 private static final String USER     = "postgres";   // seu usuário PostgreSQL
 private static final String PASSWORD = "postgres";   // sua senha PostgreSQL
 ```

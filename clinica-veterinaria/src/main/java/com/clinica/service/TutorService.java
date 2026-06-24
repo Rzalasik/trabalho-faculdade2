@@ -14,6 +14,9 @@ public class TutorService {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do tutor é obrigatório.");
         }
+        if (telefone == null || telefone.isBlank()) {
+            throw new IllegalArgumentException("Telefone do tutor é obrigatório.");
+        }
         Tutor tutor = new Tutor(nome, endereco, telefone);
         return repository.save(tutor);
     }

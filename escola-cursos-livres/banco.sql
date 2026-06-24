@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS curso (
     descricao          TEXT,
     carga_horaria      INT NOT NULL,
     vagas_totais       INT NOT NULL,
-    vagas_disponiveis  INT NOT NULL
+    vagas_disponiveis  INT NOT NULL CHECK (vagas_disponiveis >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS matricula (
@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS matricula (
     curso_id    INT            NOT NULL,
     data        DATE           NOT NULL,
     valor_pago  NUMERIC(10, 2) NOT NULL CHECK (valor_pago >= 0),
-    CONSTRAINT fk_matricula_aluno FOREIGN KEY (aluno_id) REFERENCES aluno(id),
-    CONSTRAINT fk_matricula_curso FOREIGN KEY (curso_id) REFERENCES curso(id),
+    CONSTRAINT fk_matricula_aluno      FOREIGN KEY (aluno_id) REFERENCES aluno(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_matricula_curso      FOREIGN KEY (curso_id) REFERENCES curso(id) ON DELETE RESTRICT,
     CONSTRAINT uq_matricula_aluno_curso UNIQUE (aluno_id, curso_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_matricula_aluno ON matricula(aluno_id);
+CREATE INDEX IF NOT EXISTS idx_matricula_curso ON matricula(curso_id);

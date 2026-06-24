@@ -25,7 +25,7 @@ public class OrdemServicoController {
         try {
             service.concluir(osId);
             System.out.println("[OS] OS id=" + osId + " marcada como CONCLUIDA.");
-        } catch (IllegalArgumentException | SQLException e) {
+        } catch (IllegalArgumentException | IllegalStateException | SQLException e) {
             System.out.println("[OS] Erro ao concluir: " + e.getMessage());
         }
     }

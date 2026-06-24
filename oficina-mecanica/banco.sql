@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS veiculo (
     modelo      VARCHAR(100) NOT NULL,
     ano         INT,
     cliente_id  INT NOT NULL,
-    CONSTRAINT fk_veiculo_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id)
+    CONSTRAINT fk_veiculo_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS ordem_servico (
@@ -23,6 +23,9 @@ CREATE TABLE IF NOT EXISTS ordem_servico (
     descricao_problema  TEXT           NOT NULL,
     valor               NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
     status              VARCHAR(10)    NOT NULL DEFAULT 'ABERTA',
-    CONSTRAINT fk_os_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id),
-    CONSTRAINT chk_status CHECK (status IN ('ABERTA', 'CONCLUIDA'))
+    CONSTRAINT fk_os_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_status    CHECK (status IN ('ABERTA', 'CONCLUIDA'))
 );
+
+CREATE INDEX IF NOT EXISTS idx_veiculo_cliente ON veiculo(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_os_veiculo      ON ordem_servico(veiculo_id);

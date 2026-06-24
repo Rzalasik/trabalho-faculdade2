@@ -29,6 +29,9 @@ public class OrdemServicoService {
     public void concluir(int osId) throws SQLException {
         OrdemServico os = repository.findById(osId).orElseThrow(() ->
                 new IllegalArgumentException("OS com id " + osId + " não encontrada."));
+        if ("CONCLUIDA".equals(os.getStatus())) {
+            throw new IllegalStateException("OS id=" + osId + " já está concluída.");
+        }
         os.setStatus("CONCLUIDA");
         repository.update(os);
     }

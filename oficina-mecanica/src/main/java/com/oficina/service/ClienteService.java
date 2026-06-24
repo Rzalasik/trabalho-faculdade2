@@ -14,6 +14,9 @@ public class ClienteService {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do cliente é obrigatório.");
         }
+        if (telefone == null || telefone.isBlank()) {
+            throw new IllegalArgumentException("Telefone do cliente é obrigatório.");
+        }
         Cliente cliente = new Cliente(nome, telefone);
         return repository.save(cliente);
     }

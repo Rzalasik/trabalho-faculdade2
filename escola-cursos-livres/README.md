@@ -48,7 +48,7 @@ escola-cursos-livres/
 ### 1. Crie o banco no PostgreSQL
 
 ```sql
-CREATE DATABASE escola_cursos;
+CREATE DATABASE d_escola_cursos;
 ```
 
 ### 2. Execute os scripts abaixo na ordem (respeita as foreign keys)
@@ -67,7 +67,7 @@ CREATE TABLE curso (
     descricao          TEXT,
     carga_horaria      INT NOT NULL,
     vagas_totais       INT NOT NULL,
-    vagas_disponiveis  INT NOT NULL
+    vagas_disponiveis  INT NOT NULL CHECK (vagas_disponiveis >= 0)
 );
 
 CREATE TABLE matricula (
@@ -76,10 +76,13 @@ CREATE TABLE matricula (
     curso_id    INT            NOT NULL,
     data        DATE           NOT NULL,
     valor_pago  NUMERIC(10, 2) NOT NULL CHECK (valor_pago >= 0),
-    CONSTRAINT fk_matricula_aluno FOREIGN KEY (aluno_id) REFERENCES aluno(id),
-    CONSTRAINT fk_matricula_curso FOREIGN KEY (curso_id) REFERENCES curso(id),
+    CONSTRAINT fk_matricula_aluno       FOREIGN KEY (aluno_id) REFERENCES aluno(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_matricula_curso       FOREIGN KEY (curso_id) REFERENCES curso(id) ON DELETE RESTRICT,
     CONSTRAINT uq_matricula_aluno_curso UNIQUE (aluno_id, curso_id)
 );
+
+CREATE INDEX idx_matricula_aluno ON matricula(aluno_id);
+CREATE INDEX idx_matricula_curso ON matricula(curso_id);
 ```
 
 ### 3. Configure a conexão
@@ -87,7 +90,7 @@ CREATE TABLE matricula (
 Abra `src/main/java/com/escola/util/Conexao.java` e ajuste os dados:
 
 ```java
-private static final String URL      = "jdbc:postgresql://localhost:5432/escola_cursos";
+private static final String URL      = "jdbc:postgresql://localhost:5432/d_escola_cursos";
 private static final String USER     = "postgres";   // seu usuário PostgreSQL
 private static final String PASSWORD = "postgres";   // sua senha PostgreSQL
 ```

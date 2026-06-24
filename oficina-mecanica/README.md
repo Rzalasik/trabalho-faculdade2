@@ -66,7 +66,7 @@ CREATE TABLE veiculo (
     modelo      VARCHAR(100) NOT NULL,
     ano         INT,
     cliente_id  INT NOT NULL,
-    CONSTRAINT fk_veiculo_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id)
+    CONSTRAINT fk_veiculo_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE ordem_servico (
@@ -75,9 +75,12 @@ CREATE TABLE ordem_servico (
     descricao_problema  TEXT           NOT NULL,
     valor               NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
     status              VARCHAR(10)    NOT NULL DEFAULT 'ABERTA',
-    CONSTRAINT fk_os_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id),
-    CONSTRAINT chk_status CHECK (status IN ('ABERTA', 'CONCLUIDA'))
+    CONSTRAINT fk_os_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_status    CHECK (status IN ('ABERTA', 'CONCLUIDA'))
 );
+
+CREATE INDEX idx_veiculo_cliente ON veiculo(cliente_id);
+CREATE INDEX idx_os_veiculo      ON ordem_servico(veiculo_id);
 ```
 
 ### 3. Configure a conexão
@@ -118,6 +121,8 @@ mvn exec:java
 | 2 | Valor da OS não pode ser negativo — lança `IllegalArgumentException` |
 | 3 | É possível consultar o histórico completo de manutenções de um veículo |
 | 4 | O status da OS pode ser alterado de `ABERTA` para `CONCLUIDA` |
+| 5 | Não é permitido concluir uma OS já `CONCLUIDA` — lança `IllegalStateException` |
+| 6 | Nome e telefone do cliente são obrigatórios |
 
 ---
 
@@ -129,4 +134,5 @@ mvn exec:java
 4. Lista o histórico de OSs do veículo
 5. Conclui a OS (status muda de `ABERTA` para `CONCLUIDA`)
 6. Lista o histórico novamente para verificar o status atualizado
-7. Tenta abrir OS com valor negativo — exibe mensagem de erro (regra de negócio)
+7. Tenta concluir OS já concluída — exibe mensagem de erro (regra de negócio)
+8. Tenta abrir OS com valor negativo — exibe mensagem de erro (regra de negócio)

@@ -56,7 +56,11 @@ public class Main {
         System.out.println("\n--- Histórico atualizado ---");
         osController.listarPorVeiculo(veiculo.getId());
 
-        // 7. Tentar abrir OS com valor negativo (deve falhar)
+        // 7. Tentar concluir OS já concluída (deve falhar)
+        System.out.println("\n--- Tentativa de concluir OS já concluída (deve falhar) ---");
+        osController.concluir(os.getId());
+
+        // 8. Tentar abrir OS com valor negativo (deve falhar)
         System.out.println("\n--- Tentativa de OS com valor negativo (deve falhar) ---");
         osController.abrir(veiculo.getId(), "Serviço inválido", new BigDecimal("-100.00"));
 

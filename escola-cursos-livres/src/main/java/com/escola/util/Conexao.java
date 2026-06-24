@@ -9,6 +9,10 @@ public class Conexao {
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
 
+    static {
+        java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("America/Sao_Paulo"));
+    }
+
     public static Connection getConexao() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }

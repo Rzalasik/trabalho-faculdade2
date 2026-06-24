@@ -6,11 +6,24 @@ import com.escola.controller.MatriculaController;
 import com.escola.model.Aluno;
 import com.escola.model.Curso;
 
+import com.escola.util.Conexao;
+
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 public class Main {
+
+    private static void limparBanco() throws SQLException {
+        try (Connection c = Conexao.getConexao(); Statement s = c.createStatement()) {
+            s.execute("TRUNCATE matricula, curso, aluno RESTART IDENTITY CASCADE");
+        }
+    }
+
     public static void main(String[] args) {
+        try { limparBanco(); } catch (SQLException e) { System.out.println("Aviso: não foi possível limpar o banco: " + e.getMessage()); }
         AlunoController alunoController = new AlunoController();
         CursoController cursoController = new CursoController();
         MatriculaController matriculaController = new MatriculaController();

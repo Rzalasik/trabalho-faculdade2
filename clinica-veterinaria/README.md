@@ -135,3 +135,33 @@ mvn exec:java
 4. Lista todas as consultas do animal
 5. Lista todos os animais do tutor
 6. Tenta registrar consulta com valor negativo — exibe mensagem de erro (regra de negócio)
+
+---
+
+## Exemplo de saída
+
+```
+=== CLÍNICA VETERINÁRIA ===
+
+--- Cadastrando tutor ---
+[Tutor] Cadastrado com sucesso: Tutor{id=1, nome='Carlos Souza', endereco='Rua das Flores, 100', telefone='11999990000'}
+
+--- Cadastrando animal ---
+[Animal] Cadastrado com sucesso: Animal{id=1, nome='Rex', especie='Cão', raca='Labrador', tutorId=1}
+
+--- Registrando consulta ---
+[Consulta] Registrada com sucesso: Consulta{id=1, animalId=1, data=2026-06-24, motivo='Check-up anual', valor=150.00}
+
+--- Consultas do animal ---
+[Consulta] Consultas do animal id=1: 1
+  Consulta{id=1, animalId=1, data=2026-06-24, motivo='Check-up anual', valor=150.00}
+
+--- Animais do tutor ---
+[Animal] Animais do tutor id=1: 1
+  Animal{id=1, nome='Rex', especie='Cão', raca='Labrador', tutorId=1}
+
+--- Tentativa de consulta com valor negativo (deve falhar) ---
+[Consulta] Erro ao registrar: O valor da consulta não pode ser negativo.
+
+=== FIM DO FLUXO ===
+```

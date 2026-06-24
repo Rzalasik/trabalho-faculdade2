@@ -138,3 +138,37 @@ mvn exec:java
 5. Tenta matricular `Bruno Costa` — exibe erro (curso sem vagas)
 6. Lista todos os alunos do curso
 7. Lista todos os cursos de `Ana Lima`
+
+---
+
+## Exemplo de saída
+
+```
+=== ESCOLA DE CURSOS LIVRES ===
+
+--- Cadastrando alunos ---
+[Aluno] Cadastrado com sucesso: Aluno{id=1, nome='Ana Lima', email='ana@email.com', telefone='11977770000'}
+[Aluno] Cadastrado com sucesso: Aluno{id=2, nome='Bruno Costa', email='bruno@email.com', telefone='11966660000'}
+
+--- Cadastrando curso (1 vaga) ---
+[Curso] Cadastrado com sucesso: Curso{id=1, nome='Java para Iniciantes', cargaHoraria=40h, vagasTotais=1, vagasDisponiveis=1}
+
+--- Matriculando aluno1 (deve ter sucesso, vagas: 1→0) ---
+[Matricula] Realizada com sucesso: Matricula{id=1, alunoId=1, cursoId=1, data=2026-06-24, valorPago=299.90}
+
+--- Tentativa de matrícula duplicada do aluno1 (deve falhar) ---
+[Matricula] Erro: Aluno 'Ana Lima' já está matriculado no curso 'Java para Iniciantes'.
+
+--- Tentativa de matrícula do aluno2 (curso sem vagas — deve falhar) ---
+[Matricula] Erro: Curso 'Java para Iniciantes' não possui vagas disponíveis.
+
+--- Alunos do curso ---
+[Curso] Alunos do curso id=1: 1
+  Aluno{id=1, nome='Ana Lima', email='ana@email.com', telefone='11977770000'}
+
+--- Cursos do aluno1 ---
+[Aluno] Cursos do aluno id=1: 1
+  Curso{id=1, nome='Java para Iniciantes', cargaHoraria=40h, vagasTotais=1, vagasDisponiveis=0}
+
+=== FIM DO FLUXO ===
+```

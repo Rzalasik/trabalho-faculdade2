@@ -6,11 +6,24 @@ import com.clinica.controller.TutorController;
 import com.clinica.model.Animal;
 import com.clinica.model.Tutor;
 
+import com.clinica.util.Conexao;
+
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 public class Main {
+
+    private static void limparBanco() throws SQLException {
+        try (Connection c = Conexao.getConexao(); Statement s = c.createStatement()) {
+            s.execute("TRUNCATE consulta, animal, tutor RESTART IDENTITY CASCADE");
+        }
+    }
+
     public static void main(String[] args) {
+        try { limparBanco(); } catch (SQLException e) { System.out.println("Aviso: não foi possível limpar o banco: " + e.getMessage()); }
         TutorController tutorController = new TutorController();
         AnimalController animalController = new AnimalController();
         ConsultaController consultaController = new ConsultaController();

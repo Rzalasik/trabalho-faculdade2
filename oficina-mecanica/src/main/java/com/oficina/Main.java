@@ -7,10 +7,23 @@ import com.oficina.model.Cliente;
 import com.oficina.model.OrdemServico;
 import com.oficina.model.Veiculo;
 
+import com.oficina.util.Conexao;
+
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main {
+
+    private static void limparBanco() throws SQLException {
+        try (Connection c = Conexao.getConexao(); Statement s = c.createStatement()) {
+            s.execute("TRUNCATE ordem_servico, veiculo, cliente RESTART IDENTITY CASCADE");
+        }
+    }
+
     public static void main(String[] args) {
+        try { limparBanco(); } catch (SQLException e) { System.out.println("Aviso: não foi possível limpar o banco: " + e.getMessage()); }
         ClienteController clienteController = new ClienteController();
         VeiculoController veiculoController = new VeiculoController();
         OrdemServicoController osController = new OrdemServicoController();

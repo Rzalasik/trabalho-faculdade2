@@ -136,3 +136,39 @@ mvn exec:java
 6. Lista o histórico novamente para verificar o status atualizado
 7. Tenta concluir OS já concluída — exibe mensagem de erro (regra de negócio)
 8. Tenta abrir OS com valor negativo — exibe mensagem de erro (regra de negócio)
+
+---
+
+## Exemplo de saída
+
+```
+=== OFICINA MECÂNICA ===
+
+--- Cadastrando cliente ---
+[Cliente] Cadastrado com sucesso: Cliente{id=1, nome='Maria Oliveira', telefone='11988880000'}
+
+--- Cadastrando veículo ---
+[Veiculo] Cadastrado com sucesso: Veiculo{id=1, placa='ABC-1234', modelo='Honda Civic', ano=2020, clienteId=1}
+
+--- Abrindo OS ---
+[OS] Aberta com sucesso: OrdemServico{id=1, veiculoId=1, descricao='Troca de óleo e filtro', valor=250.00, status='ABERTA'}
+
+--- Histórico de OSs do veículo ---
+[OS] Histórico do veículo id=1: 1 registro(s)
+  OrdemServico{id=1, veiculoId=1, descricao='Troca de óleo e filtro', valor=250.00, status='ABERTA'}
+
+--- Concluindo OS ---
+[OS] OS id=1 marcada como CONCLUIDA.
+
+--- Histórico atualizado ---
+[OS] Histórico do veículo id=1: 1 registro(s)
+  OrdemServico{id=1, veiculoId=1, descricao='Troca de óleo e filtro', valor=250.00, status='CONCLUIDA'}
+
+--- Tentativa de concluir OS já concluída (deve falhar) ---
+[OS] Erro ao concluir: OS id=1 já está concluída.
+
+--- Tentativa de OS com valor negativo (deve falhar) ---
+[OS] Erro ao abrir: O valor da OS não pode ser negativo.
+
+=== FIM DO FLUXO ===
+```

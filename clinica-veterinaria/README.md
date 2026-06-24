@@ -144,7 +144,9 @@ mvn exec:java
 
 ---
 
-## Exemplo de saída
+## Demonstração completa
+
+### Saída do console
 
 ```
 === CLÍNICA VETERINÁRIA ===
@@ -171,3 +173,29 @@ mvn exec:java
 
 === FIM DO FLUXO ===
 ```
+
+### Estado do banco após execução
+
+**`SELECT * FROM tutor;`**
+
+| id | nome         | endereco            | telefone    |
+|----|--------------|---------------------|-------------|
+| 1  | Carlos Souza | Rua das Flores, 100 | 11999990000 |
+
+**`SELECT * FROM animal;`**
+
+| id | nome | especie | raca     | tutor_id |
+|----|------|---------|----------|----------|
+| 1  | Rex  | Cão     | Labrador | 1        |
+
+**`SELECT * FROM consulta;`**
+
+| id | animal_id | data       | motivo        | valor  |
+|----|-----------|------------|---------------|--------|
+| 1  | 1         | 2026-06-24 | Check-up anual | 150.00 |
+
+**`SELECT a.nome AS animal, t.nome AS tutor, c.motivo, c.valor FROM consulta c JOIN animal a ON a.id = c.animal_id JOIN tutor t ON t.id = a.tutor_id;`**
+
+| animal | tutor        | motivo         | valor  |
+|--------|--------------|----------------|--------|
+| Rex    | Carlos Souza | Check-up anual | 150.00 |

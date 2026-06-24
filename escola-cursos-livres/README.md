@@ -147,7 +147,9 @@ mvn exec:java
 
 ---
 
-## Exemplo de saída
+## Demonstração completa
+
+### Saída do console
 
 ```
 === ESCOLA DE CURSOS LIVRES ===
@@ -178,3 +180,32 @@ mvn exec:java
 
 === FIM DO FLUXO ===
 ```
+
+### Estado do banco após execução
+
+**`SELECT * FROM aluno;`**
+
+| id | nome        | email            | telefone    |
+|----|-------------|------------------|-------------|
+| 1  | Ana Lima    | ana@email.com    | 11977770000 |
+| 2  | Bruno Costa | bruno@email.com  | 11966660000 |
+
+**`SELECT * FROM curso;`**
+
+| id | nome                  | descricao                    | carga_horaria | vagas_totais | vagas_disponiveis |
+|----|-----------------------|------------------------------|---------------|--------------|-------------------|
+| 1  | Java para Iniciantes  | Fundamentos da linguagem Java | 40            | 1            | 0                 |
+
+> `vagas_disponiveis` foi de 1 → 0 após a matrícula de Ana Lima (regra de negócio aplicada automaticamente)
+
+**`SELECT * FROM matricula;`**
+
+| id | aluno_id | curso_id | data       | valor_pago |
+|----|----------|----------|------------|------------|
+| 1  | 1        | 1        | 2026-06-24 | 299.90     |
+
+**`SELECT a.nome, c.nome AS curso FROM matricula m JOIN aluno a ON a.id = m.aluno_id JOIN curso c ON c.id = m.curso_id;`**
+
+| nome     | curso                |
+|----------|----------------------|
+| Ana Lima | Java para Iniciantes |

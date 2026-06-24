@@ -145,7 +145,9 @@ mvn exec:java
 
 ---
 
-## Exemplo de saída
+## Demonstração completa
+
+### Saída do console
 
 ```
 === OFICINA MECÂNICA ===
@@ -178,3 +180,31 @@ mvn exec:java
 
 === FIM DO FLUXO ===
 ```
+
+### Estado do banco após execução
+
+**`SELECT * FROM cliente;`**
+
+| id | nome           | telefone    |
+|----|----------------|-------------|
+| 1  | Maria Oliveira | 11988880000 |
+
+**`SELECT * FROM veiculo;`**
+
+| id | placa    | modelo      | ano  | cliente_id |
+|----|----------|-------------|------|------------|
+| 1  | ABC-1234 | Honda Civic | 2020 | 1          |
+
+**`SELECT * FROM ordem_servico;`**
+
+| id | veiculo_id | descricao_problema      | valor  | status    |
+|----|------------|-------------------------|--------|-----------|
+| 1  | 1          | Troca de óleo e filtro  | 250.00 | CONCLUIDA |
+
+> `status` passou de `ABERTA` → `CONCLUIDA` após a conclusão da OS (regra de negócio aplicada)
+
+**`SELECT c.nome, v.placa, v.modelo, os.descricao_problema, os.valor, os.status FROM ordem_servico os JOIN veiculo v ON v.id = os.veiculo_id JOIN cliente c ON c.id = v.cliente_id;`**
+
+| nome           | placa    | modelo      | descricao_problema     | valor  | status    |
+|----------------|----------|-------------|------------------------|--------|-----------|
+| Maria Oliveira | ABC-1234 | Honda Civic | Troca de óleo e filtro | 250.00 | CONCLUIDA |

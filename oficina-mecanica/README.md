@@ -43,6 +43,12 @@ oficina-mecanica/
 
 ---
 
+## Diagrama ER
+
+![Diagrama ER](er_diagram.png)
+
+---
+
 ## Configuração do Banco de Dados
 
 ### 1. Crie o banco no PostgreSQL
